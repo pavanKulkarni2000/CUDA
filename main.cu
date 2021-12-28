@@ -7,6 +7,7 @@
 #include <cuda.h>
 #include <cstdio>
 #include <time.h>
+#include <stdio.h>
 
 static mnist_data *train_set, *test_set;
 static unsigned int train_cnt, test_cnt;
@@ -159,7 +160,7 @@ static void learn()
 	cublasCreate(&blas);
 
 	float err;
-	int iter = 20;
+	int iter = 5;
 	
 	double time_taken = 0.0;
 
@@ -238,10 +239,19 @@ static void predict()
 {
   char image_file[100];
   double data[28][28];
-  while(1){
-    fprintf(stdout, "classify : ");
-    fscanf(stdin,"%s",image_file);
-    image_matrix(image_file,data);
+  for(int i=0;i<10;i++)
+  for(int j=0;j<5;j++)
+  {
+    sprintf(image_file,"samples/%d%c.png",i,'a'+j);
+    fprintf(stdout, "classify : %s",image_file);
+    // fscanf(stdin,"%s",image_file);
+    image_matrix(image_file,&data);
+    // for(int k=0;k<28;k++)
+    // {
+    //   for(int l=0;l<28;l++)
+    //     printf("%1.0f ", data[k][l]);
+    //   printf("\n");
+    // }
     fprintf(stdout, "output: %d\n", classify(data));
   }
 }
