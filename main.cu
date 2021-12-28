@@ -2,6 +2,7 @@
 #define MNIST_DOUBLE
 #include "mnist.h"
 #include "layer.h"
+#include "image.h"
 
 #include <cuda.h>
 #include <cstdio>
@@ -25,6 +26,7 @@ static unsigned int classify(double data[28][28]);
 static void test();
 static double forward_pass(double data[28][28]);
 static double back_pass();
+static void predict();
 
 static inline void loaddata()
 {
@@ -47,6 +49,7 @@ int main(int argc, const  char **argv)
 	loaddata();
 	learn();
 	test();
+  predict();
 
 	return 0;
 }
@@ -229,4 +232,16 @@ static void test()
 	}
 	double err_percent = double(error) / double(test_cnt) * 100.0;
 	fprintf(stdout, "Error Rate: %.2lf%% , accuracy: %.2lf%%\n",err_percent,100-err_percent);
+}
+
+static void predict()
+{
+  char image_file[100];
+  double data[28][28];
+  while(1){
+    fprintf(stdout, "classify : ");
+    fscanf(stdin,"%s",image_file);
+    image_matrix(image_file,data);
+    fprintf(stdout, "output: %d\n", classify(data));
+  }
 }
