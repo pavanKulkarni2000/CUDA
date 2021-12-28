@@ -10,7 +10,7 @@ void image_matrix(char *image_file,double data[][28][28]){
   image.release();
 
   newImg.forEach<uchar>([&data](uchar &c, const int * position) -> void {
-    (*data)[position[0]][position[1]]=(double)c/255.0;
+    (*data)[position[0]][position[1]]=(double)(255-c)/255.0;
   });
   newImg.release();
 
