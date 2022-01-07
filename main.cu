@@ -160,7 +160,7 @@ static void learn()
 	cublasCreate(&blas);
 
 	float err;
-	int iter = 5;
+	int iter = 10;
 	
 	double time_taken = 0.0;
 
@@ -225,11 +225,18 @@ static unsigned int classify(double data[28][28])
 static void test()
 {
 	int error = 0;
-
+  int clas;
 	for (int i = 0; i < test_cnt; ++i) {
-		if (classify(test_set[i].data) != test_set[i].label) {
+    // for(int k=0;k<28;k++)
+    // {
+    //   for(int l=0;l<28;l++)
+    //     printf("%1.0f ", test_set[i].data[k][l]);
+    //   printf("\n");
+    // }
+		if ((clas=classify(test_set[i].data)) != test_set[i].label) {
 			++error;
 		}
+    // printf("class=%d\n\n",clas);
 	}
 	double err_percent = double(error) / double(test_cnt) * 100.0;
 	fprintf(stdout, "Error Rate: %.2lf%% , accuracy: %.2lf%%\n",err_percent,100-err_percent);
@@ -242,16 +249,16 @@ static void predict()
   for(int i=0;i<10;i++)
   for(int j=0;j<5;j++)
   {
-    sprintf(image_file,"samples/%d%c.png",i,'a'+j);
-    fprintf(stdout, "classify : %s",image_file);
+    sprintf(image_file,"samples/%d%c.jpg",i,'a'+j);
+    fprintf(stdout, "classify : %s\n",image_file);
     // fscanf(stdin,"%s",image_file);
     image_matrix(image_file,&data);
-    // for(int k=0;k<28;k++)
-    // {
-    //   for(int l=0;l<28;l++)
-    //     printf("%1.0f ", data[k][l]);
-    //   printf("\n");
-    // }
-    fprintf(stdout, "output: %d\n", classify(data));
+    for(int k=0;k<28;k++)
+    {
+      for(int l=0;l<28;l++)
+        printf("%1.0f ", data[k][l]);
+      printf("\n");
+    }
+    fprintf(stdout, "output: %d\n\n", classify(data));
   }
 }
