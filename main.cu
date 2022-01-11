@@ -160,7 +160,7 @@ static void learn()
 	cublasCreate(&blas);
 
 	float err;
-	int iter = 10;
+	int iter = 3;
 	
 	double time_taken = 0.0;
 
@@ -244,15 +244,18 @@ static void test()
     fprintf(stdout, "\n");
   }
 
-  fprintf(stdout, "%5s%10s%10s%10s\n", "", "precision", "recall", "f1-score" );
-  for(i=0;i<10;i++)
-    fprintf(stdout, "%5d%10f%10f%10f\n", i, 
-                            double(confusionMatrix[i][j])/double()), 
-                            "recall", 
-                            "f1-score" );
 
-	double err_percent = double(error) / double(test_cnt) * 100.0;
-	fprintf(stdout, "Error Rate: %.2lf%% , accuracy: %.2lf%%\n",err_percent,100-err_percent);
+  double accuracy=0;
+  fprintf(stdout, "%5s%10s%10s\n", "", "precision", "recall" );
+  for(i=0;i<10;i++){
+    fprintf(stdout, "%5d%10.4f%10.4f\n", i, 
+                            double(confusionMatrix[i][i])/double(predictions[i]), 
+                            double(confusionMatrix[i][i])/double(samples[i]) );
+    accuracy+=confusionMatrix[i][i];
+  }
+  accuracy/=double(test_cnt);
+
+	fprintf(stdout, "Error Rate: %.2lf%% , accuracy: %.2lf%%\n",(1-accuracy)*100,accuracy*100);
 }
 
 static void predict()
