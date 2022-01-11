@@ -224,20 +224,33 @@ static unsigned int classify(double data[28][28])
 // Perform forward propagation of test data
 static void test()
 {
-	int error = 0;
-  int clas;
-	for (int i = 0; i < test_cnt; ++i) {
-    // for(int k=0;k<28;k++)
-    // {
-    //   for(int l=0;l<28;l++)
-    //     printf("%1.0f ", test_set[i].data[k][l]);
-    //   printf("\n");
-    // }
-		if ((clas=classify(test_set[i].data)) != test_set[i].label) {
-			++error;
-		}
-    // printf("class=%d\n\n",clas);
-	}
+  int confusionMatrix[10][10]={0};
+  int samples[10]={0};
+  int predictions[10]={0};
+  int i,j,prediction;
+
+	for (i = 0; i < test_cnt; ++i){
+    prediction=classify(test_set[i].data);
+		confusionMatrix[prediction][test_set[i].label]++;
+    predictions[prediction]++;
+    samples[test_set[i].label]++;
+  }
+  
+  fprintf(stdout, "Confusion matrix:\n");
+  for(i=0;i<10;i++){
+    for(j=0;j<10;j++){
+      fprintf(stdout, "%7d", confusionMatrix[i][j]);
+    }
+    fprintf(stdout, "\n");
+  }
+
+  fprintf(stdout, "%5s%10s%10s%10s\n", "", "precision", "recall", "f1-score" );
+  for(i=0;i<10;i++)
+    fprintf(stdout, "%5d%10f%10f%10f\n", i, 
+                            double(confusionMatrix[i][j])/double()), 
+                            "recall", 
+                            "f1-score" );
+
 	double err_percent = double(error) / double(test_cnt) * 100.0;
 	fprintf(stdout, "Error Rate: %.2lf%% , accuracy: %.2lf%%\n",err_percent,100-err_percent);
 }
@@ -246,19 +259,33 @@ static void predict()
 {
   char image_file[100];
   double data[28][28];
-  for(int i=0;i<10;i++)
-  for(int j=0;j<5;j++)
+  // for(int i=0;i<10;i++)
+  // for(int j=0;j<5;j++)
+  while(1)
   {
-    sprintf(image_file,"samples/%d%c.jpg",i,'a'+j);
-    fprintf(stdout, "classify : %s\n",image_file);
-    // fscanf(stdin,"%s",image_file);
+    // sprintf(image_file,"samples/%d%c.jpg",i,'a'+j);
+    // fprintf(stdout, "classify : %s\n",image_file);
+
+    fprintf(stdout, "classify : ");
+    fscanf(stdin,"%s",image_file);
+
+    cv::Mat image = cv::imread("samples/1a.jpg",cv::IMREAD_GRAYSCALE);
+    if (image.empty()) {
+      fprintf(stdout, "Image not found!\n");
+      continue;
+    } 
+    cv::Mat resized_down;
+    cv::resize(image, resized_down, cv::Size(200, 200), cv::INTER_LINEAR);
+    //cv::imshow("Image to classify", resized_down);
+    //cv::waitKey(0);
+
     image_matrix(image_file,&data);
-    for(int k=0;k<28;k++)
-    {
-      for(int l=0;l<28;l++)
-        printf("%1.0f ", data[k][l]);
-      printf("\n");
-    }
+    // for(int k=0;k<28;k++)
+    // {
+    //   for(int l=0;l<28;l++)
+    //     printf("%1.0f ", data[k][l]);
+    //   printf("\n");
+    // }
     fprintf(stdout, "output: %d\n\n", classify(data));
   }
 }
