@@ -160,7 +160,7 @@ static void learn()
 	cublasCreate(&blas);
 
 	float err;
-	int iter = 3;
+	int iter = 10;
 	
 	double time_taken = 0.0;
 
@@ -197,7 +197,7 @@ static void learn()
 
 	}
 	
-	fprintf(stdout, "\n Time - %lf s\n", time_taken);
+	fprintf(stdout, "\nTime - %lf s\n", time_taken);
 }
 
 
@@ -236,7 +236,7 @@ static void test()
     samples[test_set[i].label]++;
   }
   
-  fprintf(stdout, "Confusion matrix:\n");
+  fprintf(stdout, "\nConfusion matrix:\n");
   for(i=0;i<10;i++){
     for(j=0;j<10;j++){
       fprintf(stdout, "%7d", confusionMatrix[i][j]);
@@ -246,7 +246,7 @@ static void test()
 
 
   double accuracy=0;
-  fprintf(stdout, "%5s%10s%10s\n", "", "precision", "recall" );
+  fprintf(stdout, "\n\n%5s%10s%10s\n\n", "", "precision", "recall" );
   for(i=0;i<10;i++){
     fprintf(stdout, "%5d%10.4f%10.4f\n", i, 
                             double(confusionMatrix[i][i])/double(predictions[i]), 
@@ -272,7 +272,7 @@ static void predict()
     fprintf(stdout, "classify : ");
     fscanf(stdin,"%s",image_file);
 
-    cv::Mat image = cv::imread("samples/1a.jpg",cv::IMREAD_GRAYSCALE);
+    cv::Mat image = cv::imread(image_file,cv::IMREAD_GRAYSCALE);
     if (image.empty()) {
       fprintf(stdout, "Image not found!\n");
       continue;
@@ -283,12 +283,6 @@ static void predict()
     //cv::waitKey(0);
 
     image_matrix(image_file,&data);
-    // for(int k=0;k<28;k++)
-    // {
-    //   for(int l=0;l<28;l++)
-    //     printf("%1.0f ", data[k][l]);
-    //   printf("\n");
-    // }
     fprintf(stdout, "output: %d\n\n", classify(data));
   }
 }
