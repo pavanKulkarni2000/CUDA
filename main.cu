@@ -222,40 +222,38 @@ static unsigned int classify(double data[28][28])
 }
 
 // Perform forward propagation of test data
-static void test()
-{
-  int confusionMatrix[10][10]={0};
-  int samples[10]={0};
-  int predictions[10]={0};
-  int i,j,prediction;
+static void test() {
+  int confusionMatrix[10][10] = {0};
+  int samples[10] = {0};
+  int predictions[10] = {0};
+  int i, j, prediction;
 
-	for (i = 0; i < test_cnt; ++i){
-    prediction=classify(test_set[i].data);
-		confusionMatrix[prediction][test_set[i].label]++;
+  for (i = 0; i < test_cnt; ++i) {
+    prediction = classify(test_set[i].data);
+    confusionMatrix[prediction][test_set[i].label]++;
     predictions[prediction]++;
     samples[test_set[i].label]++;
   }
-  
-  fprintf(stdout, "\nConfusion matrix:\n");
-  for(i=0;i<10;i++){
-    for(j=0;j<10;j++){
+
+  fprintf(stdout, "\nConfusion matrix:\n\n");
+  for (i = 0; i < 10; i++) {
+    for (j = 0; j < 10; j++) {
       fprintf(stdout, "%7d", confusionMatrix[i][j]);
     }
     fprintf(stdout, "\n");
   }
 
-
-  double accuracy=0;
-  fprintf(stdout, "\n\n%5s%10s%10s\n\n", "", "precision", "recall" );
-  for(i=0;i<10;i++){
-    fprintf(stdout, "%5d%10.4f%10.4f\n", i, 
-                            double(confusionMatrix[i][i])/double(predictions[i]), 
-                            double(confusionMatrix[i][i])/double(samples[i]) );
-    accuracy+=confusionMatrix[i][i];
+  double accuracy = 0;
+  fprintf(stdout, "\n\n%8s%14s%14s\n\n", "", "precision", "recall");
+  for (i = 0; i < 10; i++) {
+    fprintf(stdout, "%8d%14.4f%14.4f\n", i,
+      double(confusionMatrix[i][i]) / double(predictions[i]),
+      double(confusionMatrix[i][i]) / double(samples[i]));
+    accuracy += confusionMatrix[i][i];
   }
-  accuracy/=double(test_cnt);
+  accuracy /= double(test_cnt);
 
-	fprintf(stdout, "Error Rate: %.2lf%% , accuracy: %.2lf%%\n",(1-accuracy)*100,accuracy*100);
+  fprintf(stdout, "\n\nError Rate: %.2lf%% , accuracy: %.2lf%%\n\n", (1 - accuracy) * 100, accuracy * 100);
 }
 
 static void predict()
@@ -274,13 +272,13 @@ static void predict()
 
     cv::Mat image = cv::imread(image_file,cv::IMREAD_GRAYSCALE);
     if (image.empty()) {
-      fprintf(stdout, "Image not found!\n");
+      fprintf(stdout, "Image not found!\n\n");
       continue;
     } 
     cv::Mat resized_down;
     cv::resize(image, resized_down, cv::Size(200, 200), cv::INTER_LINEAR);
-    //cv::imshow("Image to classify", resized_down);
-    //cv::waitKey(0);
+    cv::imshow("Image to classify", resized_down);
+    cv::waitKey(0);
 
     image_matrix(image_file,&data);
     fprintf(stdout, "output: %d\n\n", classify(data));
